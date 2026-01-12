@@ -11,6 +11,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,16 +30,17 @@ public class ChatController {
 
     /**
      * AI에게 질문을 던지는 API
+     *
      * @param memberId 질문하는 사용자 ID (아까 등록한 1번 멤버)
      * @param parentId 부모 질문 ID (첫 질문이면 생략 가능)
-     * @param content 질문 내용
-     * @param field 관심 분야 (BASIC, FINANCE, PAPER)
+     * @param content  질문 내용
+     * @param field    관심 분야 (BASIC, FINANCE, PAPER)
      */
     @PostMapping("/ask")
     public ResponseEntity<ChatResponse> ask(@RequestParam(name = "memberId") Long memberId,
-                                      @RequestParam(name = "parentId", required = false) Long parentId,
-                                      @RequestParam(name = "content") String content,
-                                      @RequestParam(name = "field") DomainField field) {
+                                            @RequestParam(name = "parentId", required = false) Long parentId,
+                                            @RequestParam(name = "content") String content,
+                                            @RequestParam(name = "field") DomainField field) {
 
         // 1. 멤버를 먼저 조회 (DB에 실제 회원이 있는지 확인)
         Member member = memberRepository.findById(memberId)
@@ -59,4 +61,6 @@ public class ChatController {
         List<ChatResponse> history = chatService.getChatHistory(memberId);
         return ResponseEntity.ok(history);
     }
+
+
 }

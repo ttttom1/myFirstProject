@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>AI 대화 내역</title>
+    <style>
+        .chat-container { width: 500px; margin: 0 auto; padding: 20px; background: #f9f9f9; border-radius: 10px; }
+        .message { margin-bottom: 15px; padding: 10px; border-radius: 8px; }
+        .QUESTION { background-color: #e3f2fd; text-align: right; margin-left: 50px; border: 1px solid #2196f3; }
+        .ANSWER { background-color: #ffffff; text-align: left; margin-right: 50px; border: 1px solid #ddd; }
+        .info { font-size: 11px; color: #888; display: block; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <h2>💬 AI 대화 내역 (회원: <span th:text="${memberId}"></span>)</h2>
+    <hr>
+
+    <div th:each="chat : ${history}" th:classappend="${chat.nodeType}" class="message">
+        <strong th:text="${chat.nodeType == 'QUESTION' ? '나' : 'Gemini AI'}">이름</strong>
+        <p th:text="${chat.content}">대화 내용</p>
+        <span class="info" th:text="${chat.createdAt}">시간</span>
+    </div>
+
+    <button onclick="location.reload()">새로고침</button>
+</div>
+
+</body>
+</html>
