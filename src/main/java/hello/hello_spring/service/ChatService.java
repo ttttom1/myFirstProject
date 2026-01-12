@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,5 +68,17 @@ public class ChatService {
                 .build();
 
         return chatNodeRepository.save(answer);
+    }
+
+
+
+
+    //해당 회원의 채팅 히스토리 전체 가져옴
+    @Transactional(readOnly = true)
+    public List<ChatResponse> getChatHistory(Long memberId){
+        List<ChatNode> chatNodes = chatNodeRepository.findByMemberIdOrderByCreatedAtAsc(memberId);
+        return chatNodes.stream()
+                .map(ChatResponse::from)
+                .toList();
     }
 }

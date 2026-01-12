@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor
@@ -49,5 +51,12 @@ public class ChatController {
         ChatResponse response = ChatResponse.from(savedAnswer);
 
         return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/history/{memberId}")
+    public ResponseEntity<List<ChatResponse>> getHistory(@PathVariable Long memberId) {
+        List<ChatResponse> history = chatService.getChatHistory(memberId);
+        return ResponseEntity.ok(history);
     }
 }
