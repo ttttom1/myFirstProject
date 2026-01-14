@@ -34,20 +34,19 @@ public class ChatController {
      * @param memberId 질문하는 사용자 ID (아까 등록한 1번 멤버)
      * @param parentId 부모 질문 ID (첫 질문이면 생략 가능)
      * @param content  질문 내용
-     * @param field    관심 분야 (BASIC, FINANCE, PAPER)
+//     * @param field    관심 분야 (BASIC, FINANCE, PAPER)
      */
     @PostMapping("/ask")
     public ResponseEntity<ChatResponse> ask(@RequestParam(name = "memberId") Long memberId,
                                             @RequestParam(name = "parentId", required = false) Long parentId,
-                                            @RequestParam(name = "content") String content,
-                                            @RequestParam(name = "field") DomainField field) {
+                                            @RequestParam(name = "content") String content) {
 
         // 1. 멤버를 먼저 조회 (DB에 실제 회원이 있는지 확인)
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
 
         // 2. 서비스 호출 (질문과 답변이 한 번에 DB에 저장됨)
-        ChatNode savedAnswer = chatService.ask(member, parentId, content, field);
+        ChatNode savedAnswer = chatService.ask(member, parentId, content);
 
         // 3. 반환값 변환 (ChatNode -> ChatResponse)
         ChatResponse response = ChatResponse.from(savedAnswer);
@@ -63,4 +62,14 @@ public class ChatController {
     }
 
 
+    @GetMapping("/sub-history/{nodeId}")
+    public ResponseEntity<List<ChatResponse>> getSubHistory(@PathVariable Long nodeId) {
+        List<ChatResponse> subHistory = chatService.getSubHistory(nodeId);
+        return ResponseEntity.ok(subHistory);
+    }
+
+    @GetMapping("/sessions/{memberId}")
+    public List<ChatResponse> getChatSessions(@PathVariable Long memberId) {
+        return chatService.getMainSessions(memberId);
+    }
 }

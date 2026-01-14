@@ -32,9 +32,9 @@ public class ChatNode {
     @Column(name = "node_type", nullable = false, length = 50)
     private NodeType nodeType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "domain_field", nullable = false, length = 50)
-    private DomainField domainField;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "domain_field", nullable = true, length = 50)
+//    private DomainField domainField;
 
     @Lob // LONGTEXT 대신 Lob 사용 권장
     @Column(name = "chat_content", columnDefinition = "LONGTEXT")
@@ -47,11 +47,10 @@ public class ChatNode {
 
     @Builder
     public ChatNode(Member member, ChatNode parent, NodeType nodeType,
-                    DomainField domainField, String content, Integer depth) {
+                    String content, Integer depth) {
         this.member = member;
         this.parent = parent;
         this.nodeType = nodeType;
-        this.domainField = domainField;
         this.content = content;
         this.depth = depth;
         this.createdAt = LocalDateTime.now();

@@ -1,9 +1,10 @@
 package hello.hello_spring.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import hello.hello_spring.domain.chat.ChatNode;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member {
@@ -11,6 +12,36 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(unique = true, nullable = false)
+    private String loginId;
+    @Column(nullable = false)
+    private String password;
+    @OneToMany(mappedBy = "member",cascade = CascadeType.ALL)
+    private List<ChatNode> chatNodes = new ArrayList<>();
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<ChatNode> getChatNodes() {
+        return chatNodes;
+    }
+
+    public void setChatNodes(List<ChatNode> chatNodes) {
+        this.chatNodes = chatNodes;
+    }
 
     public String getName() {
         return name;

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Deep dive Navigator</title>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #fff; }
+        .login-card { width: 400px; padding: 40px; border: 1px solid #dadce0; border-radius: 8px; text-align: center; }
+        h1 { font-size: 24px; margin-bottom: 8px; font-weight: 500; }
+        p { color: #5f6368; margin-bottom: 30px; }
+        input { width: 100%; padding: 13px 15px; margin-bottom: 12px; border: 1px solid #dadce0; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 10px; background: #1a73e8; color: white; border: none; border-radius: 4px; font-weight: 500; cursor: pointer; font-size: 14px; margin-top: 20px; }
+        .footer-links { margin-top: 25px; font-size: 14px; color: #1a73e8; text-decoration: none; display: block; }
+    </style>
+</head>
+<body>
+<div class="login-card">
+    <h1>Deep Dive Navigator</h1>
+    <p>계속하려면 로그인하세요</p>
+    <form action="/login" method="post">
+        <input type="text" name="username" placeholder="아이디" required>
+        <input type="password" name="password" placeholder="비밀번호" required>
+        <button type="submit">다음</button>
+    </form>
+    <a href="/signup" class="footer-links">계정 만들기</a>
+</div>
+
+</body>
+</html>

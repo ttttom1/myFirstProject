@@ -1,8 +1,9 @@
-package hello.hello_spring.domain.chat; // 방법 B라면 패키지 경로를 repository로 수정!
+package hello.hello_spring.repository; // 방법 B라면 패키지 경로를 repository로 수정!
 
+import hello.hello_spring.domain.chat.ChatNode;
+import hello.hello_spring.domain.chat.DomainField;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 public interface ChatNodeRepository extends JpaRepository<ChatNode, Long> {
@@ -11,5 +12,6 @@ public interface ChatNodeRepository extends JpaRepository<ChatNode, Long> {
 
     List<ChatNode> findByParentIdOrderByCreatedAtAsc(Long parentId);
 
-    List<ChatNode> findTop3ByMemberIdAndFieldOrderByCreatedAtDesc(Long memberId, DomainField field);
+    List<ChatNode> findByMemberIdAndParentIsNullOrderByCreatedAtDesc(Long memberId);
+
 }
