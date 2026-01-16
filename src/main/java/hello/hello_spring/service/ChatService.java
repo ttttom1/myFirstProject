@@ -163,6 +163,10 @@ public class ChatService {
         ChatNode parent = (parentId != null) ?
                 chatNodeRepository.findById(parentId).orElse(null) : null;
 
+        //해당대화 최상단 노드(대화별 구룹핑)
+        ChatNode rootNode = (parent == null)? null: (parent.getRootNode() == null ? parent :parent.getRootNode());
+
+
         // 2. AI에게 전달할 맥락(Context) 조립 (영어 프롬프트로 정확도 향상)
         // 사용자가 드래그한 원문 내용을 'Immediate Context'로 넣어 학습을 돕습니다.
         String contextContent = (parent != null) ? parent.getContent() : "No prior context.";
@@ -189,6 +193,7 @@ public class ChatService {
         ChatNode questionNode = ChatNode.builder()
                 .member(member)
                 .parent(parent)
+                .rootNode(rootNode)
                 .content(content)
                 .nodeType(NodeType.QUESTION)
                 .depth(parent == null ? 0 : parent.getDepth() + 1)
@@ -199,6 +204,7 @@ public class ChatService {
         ChatNode answerNode = ChatNode.builder()
                 .member(member)
                 .parent(questionNode)
+                .rootNode(rootNode)
                 .content(aiAnswer)
                 .nodeType(NodeType.ANSWER)
                 .depth(questionNode.getDepth() + 1)
@@ -212,16 +218,13 @@ public class ChatService {
      */
     @Transactional(readOnly = true)
     public List<ChatResponse> getSubHistory(Long nodeId) {
-        ChatNode root = chatNodeRepository.findById(nodeId)
+        //노드 아이디 받은 노드 불러옴
+        ChatNode node = chatNodeRepository.findById(nodeId)
                 .orElseThrow(() -> new RuntimeException("Node not found: " + nodeId));
+        //클릭한 노드가, 루트 노드인지 ,아니면 따로 있는지 확인
+        Long actualRootId = (node.getParent() == null)? node.getId():node.getRootNode().getId();
 
-        // 특정 노드를 부모로 가진 모든 자식 노드들을 생성 순서대로 조회
-        List<ChatNode> children = chatNodeRepository.findByParentIdOrderByCreatedAtAsc(nodeId);
-
-        List<ChatResponse> results = new ArrayList<>();
-        results.add(ChatResponse.from(root)); // 기준점 추가
-        results.addAll(children.stream().map(ChatResponse::from).toList()); // 자식들 추가
-        return results;
+        return chatNodeRepository.findByRootNodeIdOrderByIdAsc(actualRootId).stream().map(ChatResponse::from).toList();
     }
 
     @Transactional(readOnly = true)

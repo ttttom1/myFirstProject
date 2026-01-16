@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -30,10 +31,13 @@ public class ChatViewController {
         Member member = memberRepository.findByLoginId(longinId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
         //3.서비스에서 해당 회원의 채팅 가져오기
-        List<ChatResponse> history = chatService.getMainSessions(member.getId());
+        List<ChatResponse> history = chatService.getChatHistory(member.getId());
+        // side-bar
+        List<ChatResponse> session = chatService.getMainSessions(member.getId());
         //4.화면에 데이터 전달
-        model.addAttribute("history",history);
+        model.addAttribute("history",new ArrayList<ChatResponse>());
         model.addAttribute("memberId",member.getId());
+        model.addAttribute("sessions",session);
 
         return "chat-history";
     }

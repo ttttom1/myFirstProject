@@ -43,13 +43,18 @@ public class ChatNode {
     @Column(name = "node_depth") // depth 대신 node_depth로 이름 변경 (예약어 회피)
     private Integer depth;
 
+    @ManyToOne
+    @JoinColumn(name = "root_node_id")
+    private ChatNode rootNode; //각 대화의 뿌리 채(최상위 노드)
+
     private LocalDateTime createdAt;
 
     @Builder
-    public ChatNode(Member member, ChatNode parent, NodeType nodeType,
+    public ChatNode(Member member, ChatNode parent, ChatNode rootNode, NodeType nodeType,
                     String content, Integer depth) {
         this.member = member;
         this.parent = parent;
+        this.rootNode = rootNode;
         this.nodeType = nodeType;
         this.content = content;
         this.depth = depth;

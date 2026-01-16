@@ -18,20 +18,29 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // API 테스트를 위해 임시 비활성화
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**") // H2 콘솔은 CSRF 보안에서 제외
+                        .disable()) // 현재 설정하신 대로 전체 비활성화 유지
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/signup", "/css/**", "/js/**").permitAll() // 누구나 접근 가능
-                        .anyRequest().authenticated() // 그 외는 로그인 필수
+                        .requestMatchers("/h2-console/**").permitAll() // H2 콘솔 접근 허용
+                        .requestMatchers("/login", "/signup", "/css/**", "/js/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // 커스텀 로그인 페이지 경로
+                        .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .usernameParameter("username")
-                        .defaultSuccessUrl("/chat", true) // 로그인 성공 시 이동할 곳
+                        .defaultSuccessUrl("/chat", true)
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout.permitAll())
+                // H2 콘솔은 <iframe>을 사용하므로 이 설정이 없으면 화면이 깨지거나 안 보입니다.
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin())
+                );
 
         return http.build();
     }
+
+
 }

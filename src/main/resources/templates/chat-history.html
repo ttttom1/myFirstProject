@@ -14,117 +14,157 @@
 
         /* 1. 사이드바 */
         .sidebar {
-            width: var(--sidebar-width);
-            background: var(--bg-light);
-            border-right: 1px solid #dadce0;
-            display: flex;
-            flex-direction: column;
-            padding: 12px;
-            flex-shrink: 0;
-            transition: transform 0.3s ease;
+            width: var(--sidebar-width); background: var(--bg-light); border-right: 1px solid #dadce0;
+            display: flex; flex-direction: column; padding: 15px; flex-shrink: 0; transition: transform 0.3s ease;
         }
         .sidebar.hide { transform: translateX(-100%); width: 0; padding: 0; margin: 0; border: none; }
 
         .new-chat {
             background: white; border: 1px solid #dadce0; border-radius: 24px; padding: 12px 24px;
-            font-weight: 500; cursor: pointer; margin-bottom: 20px;
-        }
-        .session-item { padding: 10px; border-radius: 8px; cursor: pointer; font-size: 14px; display: flex; justify-content: space-between; }
-        .session-item:hover { background: #e8eaed; }
-
-        /* 기존 .page-container, .page 등을 지우고 이걸 넣으세요 */
-    .page-container {
-        display: flex;
-        width: max-content; /* 페이지가 늘어나는 대로 가로로 확장 */
-        transition: transform 0.5s ease-in-out;
-    }
-
-    .page {
-        width: 50vw; /* 한 화면에 두 페이지가 보이도록 설정 */
-        height: 100vh;
-        border-right: 1px solid #eee;
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* 사이드바 토글 버튼 (추가) */
-    .menu-toggle {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 1100;
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 50%;
-        width:40;
-        height:40;
-        cursor: pointer;
-        display: flex;
-        align-item:center;
-        justify-content:center;
-        box-shadow: 0 1px 3px rgba(60,64,67, 0.3);
-        transition:all 0.3s ease;
-    }
-    .menu-toggle:hover{
-        background-color: #f1f3f4;
-        }
-        #sidebar.not(.hide) ~ .menu-toggle{
-            opacity: 0.5;
-        }
-    /* 사이드바가 숨겨졌을 때만 버튼 이 보임 */
-    #sidebar.hide ~ .menu-toggle { display: block;}
-
-        .page-header {
-            padding: 16px 24px;
-            border-bottom: 1px solid #dadce0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: var(--bg-light);
+            font-weight: 600; cursor: pointer; margin-top: 60px; margin-bottom: 20px;
         }
 
-        /* 4. 대화창 및 메시지 */
-        .chat-window { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-        .message { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 15px; position: relative; }
-        .QUESTION { background: #e8f0fe; align-self: flex-end; color: #1967d2; }
-        .ANSWER { background: #f1f3f4; align-self: flex-start; }
+        /* 2. 페이지 레이아웃 */
+        .page-container { display: flex; width: max-content; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .page { width: 50vw; height: 100vh; border-right: 1px solid #eee; flex-shrink: 0; display: flex; flex-direction: column; background: white; }
 
-        /* 5. 입력창 */
-        .input-box { padding: 16px 24px; border-top: 1px solid #dadce0; display: flex; gap: 12px; }
-        .input-box input { flex: 1; padding: 12px 20px; border: 1px solid #dadce0; border-radius: 28px; outline: none; }
-        .input-box button { background: var(--primary-color); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; }
+        /* 3. 채팅창 및 메시지 디자인 */
+/* 채팅창: 위에서 아래로 쌓이는 정방향 설정 */
+.chat-window {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+    display: flex;
+    flex-direction: column; /* reverse 삭제! */
+    gap: 20px;
+}
 
-        .back-btn, .close-btn {
-            border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-weight: bold;
+/* 개별 메시지 공통 */
+.message {
+    max-width: 75%;
+    padding: 14px 20px;
+    border-radius: 18px;
+    font-size: 15px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* 내 질문: 오른쪽 정렬 */
+.QUESTION {
+    background: #1a73e8;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+/* AI 답변: 왼쪽 정렬 (이제 화면 왼쪽에 나타납니다) */
+.ANSWER {
+    background: #f1f3f4;
+    color: #3c4043;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+
+
+        /* 4. 입력창 */
+        .input-box { padding: 20px 30px; border-top: 1px solid #eee; display: flex; gap: 12px; background: white; }
+        .input-box input { flex: 1; padding: 12px 24px; border: 1px solid #dadce0; border-radius: 30px; outline: none; }
+        .input-box button { background: #1a73e8; color: white; border: none; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; }
+
+        /* 5. 플로팅 버튼 및 기타 */
+        #drag-ask-btn {
+            position: fixed; z-index: 9999; background: #202123; color: white;
+            border: none; border-radius: 20px; padding: 10px 18px; font-size: 13px;
+            font-weight: 600; cursor: pointer; display: none;
         }
-        .close-btn { background: #fbbc04; color: white; }
-        /* AI가 생각 중일 때 깜빡이는 효과 */
-        .typing {
-            color: #1a73e8;
-            font-weight: bold;
-            animation: blink 1.5s infinite;
+        .menu-toggle {
+            position: fixed; top: 15px; left: 15px; z-index: 1100; background: white; border: 1px solid #ddd;
+            border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
+        .close-btn { background: #fbbc04; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; }
 
-        @keyframes blink {
-            0% { opacity: 0.2; }
-            50% { opacity: 1; }
-            100% { opacity: 0.2; }
-        }
+        /* AI 생각 중 말풍선 스타일 보강 */
+.loading-message {
+    background: #f1f3f4;
+    align-self: flex-start;
+    color: #1a73e8;
+    font-weight: 500;
+}
 
+/* 점 세 개가 톡톡 튀는 애니메이션 */
+.typing-dots::after {
+    content: '...';
+    display: inline-block;
+    width: 20px;
+    animation: dots 1.5s steps(4, end) infinite;
+    vertical-align: bottom;
+}
+
+@keyframes dots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80% { content: '...'; }
+}
+
+/* 입력창이 비활성화되었을 때의 시각적 피드백 */
+input:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+        /* 사이드바 개별 항목 버튼 스타일 */
+/* 사이드바 개별 항목 버튼 스타일 (수정됨) */
+.session-button {
+    width: 100%;
+    padding: 10px 15px;
+    background-color: white; /* 배경을 흰색으로 */
+    border: 1px solid #dadce0; /* 테두리 추가 */
+    border-radius: 8px;
+    color: #3c4043; /* 글자색을 어두운 회색으로 */
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* 마우스를 올렸을 때(Hover) 효과 */
+.session-button:hover {
+    background-color: #e8f0fe; /* 제미나이풍 연한 파란색 */
+    border-color: #1a73e8;
+}
+
+/* 텍스트 생략 처리 (...) */
+.session-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+}
     </style>
 </head>
 <body>
 
 <aside id="sidebar" class="sidebar">
     <button class="new-chat" onclick="location.reload()">+ New Chat</button>
-    <div class="session-list">
-        <div id="sessionItems"></div>
+
+    <div id="sessionItems" class="session-list">
+        <div th:each="chatSession : ${sessions}" class="session-item">
+            <button class="session-button" th:onclick="|loadChatHistory(${chatSession.id})|">
+                <span class="session-text" th:text="${chatSession.content}">
+                    제미나이처럼 대화 제목이 여기 뜹니다.
+                </span>
+            </button>
+        </div>
     </div>
 </aside>
 
 <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+<button id="drag-ask-btn">💡 이 내용으로 꼬리물기</button>
 
 <div class="page-container" id="pageContainer">
     <div class="page" id="mainPage">
@@ -132,15 +172,15 @@
             <strong style="flex: 1;">🚀 Deep Dive Navigator (Member ID: <span id="memberId" th:text="${memberId}">1</span>)</strong>
         </div>
         <div id="mainChatWindow" class="chat-window">
-            <div th:each="chat : ${history}" th:classappend="${chat.nodeType}" class="message" th:attr="data-id=${chat.id}">
+            <div th:each="chat : ${history}"
+                 th:classappend="${chat.nodeType == 'QUESTION' ? 'QUESTION' : 'ANSWER'}"
+                 class="message" th:attr="data-id=${chat.id}">
                 <strong th:text="${chat.nodeType == 'QUESTION' ? '나' : 'Gemini AI'}"></strong>
                 <p th:text="${chat.content}" style="margin: 4px 0 0 0;"></p>
             </div>
         </div>
         <div class="input-box">
-            <input type="text" id="mainInput"
-                   onkeydown="if(event.keyCode==13) sendQuestion('main','','main')"
-                   placeholder="Enter your question here...">
+            <input type="text" id="mainInput" placeholder="Enter your question here...">
             <button onclick="sendQuestion('main','','main')">➔</button>
         </div>
     </div>
@@ -150,252 +190,206 @@
     let pageStack = ['mainPage'];
     let currentPageIndex = 0;
 
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('hide'); }
 
-    // 1. 사이드바 토글 함수 (Gemini처럼 원할 때 꺼내기)
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('hide');
-    }
-
-    // 2. New Chat: 초기화 로직
-    function startNewChat() {
-        if(confirm("새 대화를 시작하시겠습니까? 기존 내용은 사이드바에 저장됩니다.")) {
-            // 화면 초기화
-            document.getElementById('mainChatWindow').innerHTML = '';
-            // 브랜치들 모두 삭제
-            const branches = document.querySelectorAll('.page:not(#mainPage)');
-            branches.forEach(b => b.remove());
-            pageStack = ['mainPage'];
-            currentPageIndex = 0;
-            updatePagePosition();
-            loadSessions(); // 사이드바 갱신
-        }
-    }
-
-    // 페이지 위치 및 사이드바 제어
     function updatePagePosition() {
         const container = document.getElementById('pageContainer');
         const sidebar = document.getElementById('sidebar');
-
-        // 슬라이딩 이동 (한 페이지 너비 50vw 기준)
         container.style.transform = `translateX(-${currentPageIndex * 50}vw)`;
-
-        // 메인 페이지가 아닐 때 사이드바 숨기기
-        if (currentPageIndex === 0) {
-            sidebar.classList.remove('hide');
-        } else {
-            sidebar.classList.add('hide');
-        }
+        if (currentPageIndex > 0) sidebar.classList.add('hide');
+        else sidebar.classList.remove('hide');
     }
 
     // 드래그 감지
-    document.addEventListener('mouseup', function() {
+    document.addEventListener('mouseup', function(e) {
         const selection = window.getSelection();
         const text = selection.toString().trim();
+        const btn = document.getElementById('drag-ask-btn');
         if (text.length > 2) {
-            const messageEl = selection.anchorNode.parentElement.closest('.message');
+            const messageEl = selection.anchorNode.parentElement.closest('.message.ANSWER');
             if (messageEl) {
                 const nodeId = messageEl.getAttribute('data-id');
-                console.log("선택된 노드 ID:", nodeId); // 브라우저 콘솔(F12)에서 확인해보세요!
-                openBranch(nodeId, text);
+                btn.style.display = 'block';
+                btn.style.left = e.clientX + 'px';
+                btn.style.top = (e.clientY - 50) + 'px';
+                btn.onclick = () => {
+                    document.getElementById('sidebar').classList.add('hide');
+                    openBranch(nodeId, text);
+                    btn.style.display = 'none';
+                    selection.removeAllRanges();
+                };
             }
+        } else {
+            if (e.target.id !== 'drag-ask-btn') btn.style.display = 'none';
         }
     });
 
-   // 3. 무한 브랜칭 오픈 (연쇄 질문 가능)
     async function openBranch(parentId, text) {
-        const newPageId = `branch-${parentId}-${Date.now()}`; // 중복 방지 ID
-
-        // 사이드바 자동 숨김 (요구사항 2)
-        document.getElementById('sidebar').classList.add('hide');
-
+        const newPageId = `branch-${parentId}-${Date.now()}`;
         const newPage = document.createElement('div');
         newPage.className = 'page';
         newPage.id = newPageId;
         newPage.innerHTML = `
             <div class="page-header">
-                <button class="back-btn" onclick="goBackPage()">←</button>
+                <button onclick="goBackPage()" style="border:none; background:none; cursor:pointer;">←</button>
                 <span style="flex:1">🔍 Deep Dive: ${text.substring(0,10)}...</span>
                 <button class="close-btn" onclick="closeCurrentBranch()">×</button>
             </div>
             <div class="chat-window" id="window-${newPageId}"></div>
             <div class="input-box">
-                <input type="text" id="input-${newPageId}"
-                       onkeydown="if(event.keyCode==13) sendQuestion('branch', '${parentId}', '${newPageId}')"
-                       placeholder="여기서 더 깊게 질문...">
+                <input type="text" id="input-${newPageId}" placeholder="더 깊게 질문...">
                 <button onclick="sendQuestion('branch', '${parentId}', '${newPageId}')">➔</button>
             </div>
         `;
-
         document.getElementById('pageContainer').appendChild(newPage);
         pageStack.push(newPageId);
+        const branchInput = document.getElementById(`input-${newPageId}`);
+        branchInput.value = `"${text}"에 대해 더 설명해줘: `;
+        branchInput.focus();
 
-        // API 데이터 로드
         const response = await fetch(`/api/chat/sub-history/${parentId}`);
         const data = await response.json();
         const windowEl = document.getElementById(`window-${newPageId}`);
         data.forEach(chat => appendMessage(windowEl, chat));
-
-        // 슬라이드 이동 (메인-서브 2분할 상태로 이동)
         currentPageIndex = pageStack.length - 2;
-        if(currentPageIndex < 0) currentPageIndex = 0;
         updatePagePosition();
     }
 
-    // 4. 질문 전송 시 부모 노드 추적 (무한 질문의 핵심)
     async function sendQuestion(type, parentId, pageId) {
     const inputId = type === 'main' ? 'mainInput' : `input-${pageId}`;
     const input = document.getElementById(inputId);
-    const content = input.value;
-    const memberIdEl = document.getElementById('memberId');
-    const memberId = memberIdEl ? memberIdEl.textContent.trim() : "";
-
-    if (!content.trim()) return;
+    const content = input.value.trim();
+    if (!content) return;
 
     const windowId = type === 'main' ? 'mainChatWindow' : `window-${pageId}`;
     const windowEl = document.getElementById(windowId);
 
-    // 1. 내 질문 즉시 추가
-    appendMessage(windowEl, {nodeType: 'QUESTION', chatContent: content});
+    // 내 질문 추가
+    appendMessage(windowEl, {nodeType: 'QUESTION', content: content});
 
-    // 2. AI 로딩 메시지 표시 (Date.now() 오타 수정 완료)
+    // 입력창 잠금
+    input.value = "AI가 생각 중...";
+    input.disabled = true;
+
+    // 로딩 말풍선 추가
     const loadingId = `loading-${Date.now()}`;
     const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'message ANSWER loading-message';
     loadingDiv.id = loadingId;
-    loadingDiv.className = 'message ANSWER'; // CSS 스타일을 위해 ANSWER 클래스 활용
-    loadingDiv.innerHTML = `<strong>AI</strong><p class="typing">생각 중...</p>`;
+    loadingDiv.innerHTML = `<strong>Gemini AI</strong><p class="typing-dots">분석 중</p>`;
     windowEl.appendChild(loadingDiv);
     windowEl.scrollTop = windowEl.scrollHeight;
 
-    input.value = "";
-    input.disabled = true;
-
     try {
-        const safeParentId = (parentId === undefined || parentId === "undefined" || !parentId) ? "" : parentId;
-        const url = `/api/chat/ask?memberId=${memberId}&content=${encodeURIComponent(content)}&parentId=${safeParentId}`;
-
+        const memberId = document.getElementById('memberId').textContent.trim();
+        const url = `/api/chat/ask?memberId=${memberId}&content=${encodeURIComponent(content)}&parentId=${parentId || ''}`;
         const response = await fetch(url, { method: 'POST' });
 
-        // 응답이 오면 일단 로딩바 제거
+        // 답변 오면 로딩 제거
         loadingDiv.remove();
 
         if (response.ok) {
-            const data = await response.json(); // 여기서 소문자 data 선언
-            if (Array.isArray(data) && data.length > 0) {
-                const lastAiResponse = data[data.length - 1];
-                appendMessage(windowEl, lastAiResponse);
-
-                if (type === 'branch') {
-                    updateBranchAttributes(pageId, lastAiResponse.id);
-                }
-            }
-            windowEl.scrollTop = windowEl.scrollHeight;
+            const data = await response.json();
+            const lastAiResponse = Array.isArray(data) ? data[data.length - 1] : data;
+            appendMessage(windowEl, lastAiResponse);
+            if (type === 'branch') updateBranchAttributes(pageId, lastAiResponse.id);
         }
-    } catch (error) {
-        console.error("전송 실패:", error);
-        if (loadingDiv) loadingDiv.innerHTML = `<p style="color:red">오류가 발생했습니다.</p>`;
+    } catch (e) {
+        loadingDiv.remove();
+        console.error(e);
     } finally {
+        input.value = "";
         input.disabled = false;
         input.focus();
     }
 }
 
-function updateBranchAttributes(pageId, nextParentId) {
-    const input = document.getElementById(`input-${pageId}`);
-    const btn = input.nextElementSibling;
-    input.setAttribute('onkeydown', `if(event.keyCode==13) sendQuestion('branch', '${nextParentId}', '${pageId}')`);
-    btn.setAttribute('onclick', `sendQuestion('branch', '${nextParentId}', '${pageId}')`);
-}
-    function goBackPage() {
-        if (currentPageIndex > 0) {
-            currentPageIndex--;
-            updatePagePosition();
-        }
+    function updateBranchAttributes(pageId, nextParentId) {
+        const input = document.getElementById(`input-${pageId}`);
+        const btn = input.nextElementSibling;
+        input.onkeydown = (e) => { if(e.key === 'Enter') sendQuestion('branch', nextParentId, pageId); };
+        btn.onclick = () => sendQuestion('branch', nextParentId, pageId);
     }
 
+    function goBackPage() { if (currentPageIndex > 0) { currentPageIndex--; updatePagePosition(); } }
     function closeCurrentBranch() {
-        if (currentPageIndex === 0) return;
-
         const pageId = pageStack[currentPageIndex];
         const pageEl = document.getElementById(pageId);
-
         currentPageIndex--;
         updatePagePosition();
-
-        setTimeout(() => {
-            pageEl.remove();
-            pageStack = pageStack.filter(id => id !== pageId);
-        }, 400);
+        setTimeout(() => { pageEl.remove(); pageStack.pop(); }, 400);
     }
 
-<!--    async function sendQuestion(type, parentId = null) {-->
-<!--        const inputId = type === 'main' ? 'mainInput' : `input-${parentId}`;-->
-<!--        const input = document.getElementById(inputId);-->
-<!--        const content = input.value;-->
-<!--        const memberId = document.getElementById('memberId').innerText;-->
-
-<!--        if (!content.trim()) return;-->
-
-<!--        const url = `/api/chat/ask?memberId=${memberId}&content=${encodeURIComponent(content)}&parentId=${parentId || ''}`;-->
-<!--        input.value = "Thinking...";-->
-
-<!--        const response = await fetch(url, { method: 'POST' });-->
-<!--        if (response.ok) {-->
-<!--            if (type === 'main') location.reload();-->
-<!--            else {-->
-<!--                const data = await (await fetch(`/api/chat/sub-history/${parentId}`)).json();-->
-<!--                const windowEl = document.getElementById(`window-${parentId}`);-->
-<!--                windowEl.innerHTML = '';-->
-<!--                data.forEach(chat => appendMessage(windowEl, chat));-->
-<!--                input.value = "";-->
-<!--                windowEl.scrollTop = windowEl.scrollHeight;-->
-<!--            }-->
-<!--        }-->
-<!--    }-->
-
+    // appendMessage 함수 보정: nodeType에 따라 정확한 클래스 부여
     function appendMessage(el, chat) {
         const div = document.createElement('div');
-        div.className = `message ${chat.nodeType}`;
-        div.setAttribute('data-id', chat.id);
-        div.innerHTML = `<strong>${chat.nodeType === 'QUESTION' ? '나' : 'AI'}</strong>
-                        <p style="margin:4px 0 0 0">${chat.chatContent || chat.content}</p>`;
+        const className = chat.nodeType === 'QUESTION' ? 'QUESTION' : 'ANSWER';
+        div.className = `message ${className}`;
+        div.setAttribute('data-id', chat.id || '');
+        div.innerHTML = `<strong>${chat.nodeType === 'QUESTION' ? '나' : 'Gemini AI'}</strong><p>${chat.content}</p>`;
         el.appendChild(div);
+        el.scrollTop = el.scrollHeight;
     }
 
+    document.getElementById('mainInput').onkeydown = (e) => { if(e.key === 'Enter') sendQuestion('main','','main'); };
+
+    // 페이지 로드 시 최하단으로 스크롤 이동
+window.onload = function() {
+    const mainChat = document.getElementById('mainChatWindow');
+    if (mainChat) {
+        mainChat.scrollTop = mainChat.scrollHeight;
+    }
+    loadSessions(); // 기존 세션 로드 함수 실행
+};
+
     async function loadSessions() {
-    const memberIdEl = document.getElementById('memberId');
-    if (!memberIdEl) return;
+    const memberId = document.getElementById('memberId').textContent.trim();
+    const response = await fetch(`/api/chat/sessions/${memberId}`);
+    if (response.ok) {
+        const sessions = await response.json();
+        const sessionList = document.getElementById('sessionItems');
+        sessionList.innerHTML = ''; // 기존 내용 삭제
 
-    const memberId = memberIdEl.textContent.trim();
-    try {
-        const response = await fetch(`/api/chat/sessions/${memberId}`);
-        const data = await response.json();
+        sessions.forEach(s => {
+            // 1. 감싸는 div 생성
+            const wrapper = document.createElement('div');
+            wrapper.className = 'session-item';
 
-        const listEl = document.getElementById('sessionItems');
-        if (!listEl) return;
+            // 2. 버튼 생성 (제미나이 스타일 버튼 구조)
+            const btn = document.createElement('button');
+            btn.className = 'session-button';
+            btn.onclick = () => loadChatHistory(s.id); // 클릭 이벤트 연결
 
-        listEl.innerHTML = ''; // 이전 목록 삭제
+            // 3. 텍스트를 담을 span 생성
+            const span = document.createElement('span');
+            span.className = 'session-text';
+            span.innerText = s.content;
 
-        if (Array.isArray(data)) {
-            data.forEach(s => {
-                const div = document.createElement('div');
-                div.className = 'session-item';
-                // 필드명이 chatContent인지 확인!
-                const title = s.chatContent || s.content || "새로운 대화";
-                div.innerHTML = `<span>${title.substring(0, 20)}...</span>`;
-
-                // 클릭하면 해당 채팅으로 이동하는 기능 추가하면 좋음
-                // div.onclick = () => location.href = `/chat/view/${s.id}`;
-
-                listEl.appendChild(div);
-            });
-        }
-    } catch (e) {
-        console.error("세션 로드 실패:", e);
+            btn.appendChild(span);
+            wrapper.appendChild(btn);
+            sessionList.appendChild(wrapper);
+        });
     }
 }
 
-    loadSessions();
+// 버튼 클릭 시 메인 창 내용을 바꿔주는 함수 (추가 필요)
+async function loadChatHistory(nodeId) {
+    const windowEl = document.getElementById('mainChatWindow');
+    windowEl.innerHTML = '<p style="text-align:center; padding:20px; color:#1a73e8;">대화 불러오는 중...</p>';
+
+    try {
+        const response = await fetch(`/api/chat/sub-history/${nodeId}`);
+        if (response.ok) {
+            const data = await response.json();
+            windowEl.innerHTML = ''; // 초기화
+            data.forEach(chat => appendMessage(windowEl, chat));
+            windowEl.scrollTop = windowEl.scrollHeight;
+        }
+    } catch (e) {
+        console.error("로드 실패:", e);
+    }
+}
+
 </script>
 </body>
 </html>
