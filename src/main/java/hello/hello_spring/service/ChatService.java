@@ -200,11 +200,14 @@ public class ChatService {
                 .build();
         chatNodeRepository.save(questionNode);
 
+        // 질문 저장 후에 rootNode를 다시 결정 (첫 질문이면 본인이 root)
+        ChatNode rootForAnswer = (rootNode == null) ? questionNode : rootNode;
+
         // 6. AI의 답변 저장 (사용자 질문의 자식으로 연결)
         ChatNode answerNode = ChatNode.builder()
                 .member(member)
                 .parent(questionNode)
-                .rootNode(rootNode)
+                .rootNode(rootForAnswer)
                 .content(aiAnswer)
                 .nodeType(NodeType.ANSWER)
                 .depth(questionNode.getDepth() + 1)
