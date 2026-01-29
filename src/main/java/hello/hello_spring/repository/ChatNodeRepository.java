@@ -15,4 +15,10 @@ public interface ChatNodeRepository extends JpaRepository<ChatNode, Long> {
     List<ChatNode> findByMemberIdAndParentIsNullOrderByCreatedAtDesc(Long memberId);
 
     List<ChatNode> findByRootNodeIdOrderByIdAsc(Long rootNodeId);
+
+    List<ChatNode> findByRootNodeIdAndClosedFalseOrderByIdAsc(Long rootNodeId);
+
+    boolean existsByParentIdAndClosedFalse(Long parentId);
+
+    List<ChatNode> findByParentIdAndClosedFalse(Long parentId);
 }

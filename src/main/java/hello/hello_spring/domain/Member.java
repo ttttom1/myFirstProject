@@ -24,6 +24,11 @@ public class Member {
     @OneToMany(mappedBy = "member",cascade = CascadeType.ALL)
     private List<ChatNode> chatNodes = new ArrayList<>();
 
+    @ManyToOne //현제 대화중인 노드
+    @JoinColumn(name = "current_node_id")
+    private ChatNode currentNode;
+
+
     public String getLoginId() {
         return loginId;
     }

@@ -20,12 +20,8 @@ import java.util.List;
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor
 public class ChatController {
-    @Enumerated(EnumType.STRING) // 숫자가 아닌 문자열(String)로 저장하는 방식이 훨씬 안전합니다.
-    @Column(columnDefinition = "VARCHAR(255)") // JPA가 자동으로 만드는 check 제약 조건을 방지합니다.
-    private final ChatService chatService;
 
-    @Enumerated(EnumType.STRING) // 숫자가 아닌 문자열(String)로 저장하는 방식이 훨씬 안전합니다.
-    @Column(columnDefinition = "VARCHAR(255)") // JPA가 자동으로 만드는 check 제약 조건을 방지합니다.
+    private final ChatService chatService;
     private final MemberRepository memberRepository;
 
     /**
@@ -72,4 +68,32 @@ public class ChatController {
     public List<ChatResponse> getChatSessions(@PathVariable Long memberId) {
         return chatService.getMainSessions(memberId);
     }
+
+    @PostMapping("/close/{nodeId}")
+    public ResponseEntity<Void> closeBranch(@PathVariable Long nodeId) {
+        chatService.closeBranch(nodeId);
+        return ResponseEntity.ok().build();
+    }
+
+    //브랜치 열기
+    @PostMapping("/open/{nodeId}")
+    public ResponseEntity<Void> openBranch(@PathVariable Long nodeId) {
+        chatService.openBranch(nodeId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/has-children/{nodeId}")
+    public ResponseEntity<Boolean> hasChildren(@PathVariable Long nodeId) {
+        boolean hasChildren = chatService.hasOpenChildren(nodeId);
+        return ResponseEntity.ok(hasChildren);
+    }
+
+    @PostMapping("/close-with-children/{nodeId}")
+    public ResponseEntity<Void> closeBranchWithChildren(@PathVariable Long nodeId){
+        chatService.closeBranchWithChildren(nodeId);
+        return ResponseEntity.ok().build();
+    }
+
+
+
 }

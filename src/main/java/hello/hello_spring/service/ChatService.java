@@ -1,134 +1,3 @@
-//package hello.hello_spring.service;
-//
-//import hello.hello_spring.domain.chat.*;
-//import hello.hello_spring.domain.Member;
-//import hello.hello_spring.repository.ChatNodeRepository;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//import org.springframework.web.server.ResponseStatusException;
-//
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//@Service
-//@Transactional
-//@RequiredArgsConstructor
-//public class ChatService {
-//
-//    private final ChatNodeRepository chatNodeRepository;
-//    private final AiClient aiClient;
-//    private final GeminiInterface geminiInterface; // AI 통신 인터페이스
-//
-//    // application.properties에 넣을 API 키를 가져옵니다.
-//    @Value("${ai.api.key}")
-//    private String apiKey;
-//
-//    public ChatNode ask(Member member, Long parentId, String content) {
-//
-//        String classificationPrompt = String.format(
-//                "Class"
-//        )
-//
-//        chatNodeRepository.findTop3ByMemberIdAndFieldOrderByCreatedAtDesc(member.getId(), field);
-//
-//
-//
-//        // 1. 부모 노드(이전 대화)가 있는지 확인
-//        ChatNode parent = (parentId != null) ?
-//                chatNodeRepository.findById(parentId).orElse(null) : null;
-//
-//        // 2. 사용자의 질문을 ChatNode로 만들어 저장
-//        ChatNode question = ChatNode.builder()
-//                .member(member)
-//                .parent(parent)
-//                .content(content)
-//                .nodeType(NodeType.QUESTION)
-//                .domainField(field)
-//                .depth(parent == null ? 0 : parent.getDepth() + 1)
-//                .build();
-//        chatNodeRepository.save(question);
-//
-//        // 3. Gemini API 양식에 맞춰 요청 객체 생성
-//        GeminiRequest request = new GeminiRequest(List.of(
-//                new GeminiRequest.Content(List.of(new GeminiRequest.Part(content)))
-//        ));
-//
-//        // 4. AI에게 물어보고 답변 받기
-//        GeminiResponse response = aiClient.getCompletion(apiKey, request);
-//
-//        // 응답에서 텍스트 추출 (Gemini JSON 구조가 깊어서 이렇게 가져옵니다)
-//        String aiAnswer;
-//        try {
-//            aiAnswer = response.getCandidates().get(0).getContent().getParts().get(0).getText();
-//        }catch (Exception e){
-//            System.out.println("응답 구조 분석 실패: " + response);
-//            aiAnswer = "AI 응답을 해석하는 데 실패했습니다.";
-//        }
-//        // 5. AI의 답변을 ChatNode로 만들어 저장 (부모를 위에서 만든 '질문'으로 설정)
-//        ChatNode answer = ChatNode.builder()
-//                .member(member)
-//                .parent(question)
-//                .content(aiAnswer)
-//                .nodeType(NodeType.ANSWER)
-//                .domainField(field)
-//                .depth(question.getDepth() + 1)
-//                .build();
-//
-//        return chatNodeRepository.save(answer);
-//    }
-//
-//
-//
-//
-//    //해당 회원의 채팅 히스토리 전체 가져옴
-//    @Transactional(readOnly = true)
-//    public List<ChatResponse> getChatHistory(Long memberId){
-//        List<ChatNode> chatNodes = chatNodeRepository.findByMemberIdOrderByCreatedAtAsc(memberId);
-//        return chatNodes.stream()
-//                .map(ChatResponse::from)
-//                .toList();
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public List<ChatResponse> getSubHistory(Long nodeId){
-//        // 1. 기준이 되는 노드(사용자가 드래그/클릭한 대화) 가져오기
-//        ChatNode rootNode = chatNodeRepository.findById(nodeId)
-//                .orElseThrow(() -> new RuntimeException("해당 대화 노드를 찾을 수 없습니다. ID: " + nodeId));
-//
-//        // 2. 해당 노드를 부모로 둔 하위 대화(자식들) 가져오기
-//        List<ChatNode> children = chatNodeRepository.findByParentIdOrderByCreatedAtAsc(nodeId);
-//
-//        // 3. 반환용 리스트 생성 (기준 노드 + 자식들)
-//        List<ChatResponse> subHistory = new ArrayList<>();
-//        subHistory.add(ChatResponse.from(rootNode));
-//
-//        subHistory.addAll(children.stream()
-//                .map(ChatResponse::from)
-//                .toList());
-//        return subHistory;
-//    }
-//
-//
-//    private String buildContext(Long parentId){
-//        if(parentId == null) return "";
-//
-//        //부모 3개정도만 가져온다 맥락을 위해서이니
-//        List<ChatNode> contextNodes = chatNodeRepository.findByParentIdOrderByCreatedAtAsc(parentId);
-//
-//        StringBuilder sb = new StringBuilder("이전 대화 맥락:\n");
-//        for(ChatNode node: contextNodes){
-//            String role = (node.getNodeType() == NodeType.QUESTION) ? "사용자" :"AI";
-//            sb.append(role).append(": ").append(node.getContent()).append("\n");
-//        }
-//        return sb.toString();
-//    }
-//}
-
-
-
 package hello.hello_spring.service;
 
 import hello.hello_spring.domain.chat.*;
@@ -225,9 +94,12 @@ public class ChatService {
         ChatNode node = chatNodeRepository.findById(nodeId)
                 .orElseThrow(() -> new RuntimeException("Node not found: " + nodeId));
         //클릭한 노드가, 루트 노드인지 ,아니면 따로 있는지 확인
-        Long actualRootId = (node.getParent() == null)? node.getId():node.getRootNode().getId();
+        Long actualRootId = (node.getParent() == null)? node.getId() : node.getRootNode().getId();
 
-        return chatNodeRepository.findByRootNodeIdOrderByIdAsc(actualRootId).stream().map(ChatResponse::from).toList();
+        return chatNodeRepository.findByRootNodeIdAndClosedFalseOrderByIdAsc(actualRootId).
+                stream().
+                map(ChatResponse::from)
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -256,5 +128,42 @@ public class ChatService {
         } catch (Exception e) {
             return "AI response parsing failed.";
         }
+    }
+
+    //close branch
+    public void closeBranch(Long nodeId) {
+        ChatNode node = chatNodeRepository.findById(nodeId)
+                .orElseThrow(()-> new RuntimeException("Node not found: " + nodeId));
+        node.close();
+    }
+
+    //open branch
+    public void openBranch(Long nodeId){
+        ChatNode node = chatNodeRepository.findById(nodeId)
+                .orElseThrow(()->new RuntimeException("None not found: " + nodeId));
+        node.open();
+    }
+
+    @Transactional(readOnly = true)
+    public boolean hasOpenChildren(Long nodeId) {
+        return chatNodeRepository.existsByParentIdAndClosedFalse(nodeId);
+    }
+
+    //해당 노드와 자식들 모두 닫기
+    public void closeBranchWithChildren(Long nodeId) {
+        ChatNode node = chatNodeRepository.findById(nodeId)
+                .orElseThrow(() -> new RuntimeException("Node not found: " + nodeId));
+
+        closeRecursively(node);
+    }
+
+    private void closeRecursively(ChatNode node) {
+        //자식들 먼저 닫기
+        List<ChatNode> children = chatNodeRepository.findByParentIdAndClosedFalse(node.getId());
+        for (ChatNode child : children) {
+            closeRecursively(child);
+        }
+        //본인 닫기
+        node.close();
     }
 }

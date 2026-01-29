@@ -32,10 +32,6 @@ public class ChatNode {
     @Column(name = "node_type", nullable = false, length = 50)
     private NodeType nodeType;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "domain_field", nullable = true, length = 50)
-//    private DomainField domainField;
-
     @Lob // LONGTEXT 대신 Lob 사용 권장
     @Column(name = "chat_content", columnDefinition = "LONGTEXT")
     private String content;
@@ -49,15 +45,47 @@ public class ChatNode {
 
     private LocalDateTime createdAt;
 
+    @Column(name = "is_closed") //브렌치 닫힘 상태
+    private Boolean closed = false;
+
+    @Column(name = "branch_order")//형제 브랜치 간 순서
+    private Integer branchOrder = 0;
+
+    @Column(name = "branch_title",length = 100)//브렌치 제목/요약
+    private String branchTitle;
+
+
     @Builder
     public ChatNode(Member member, ChatNode parent, ChatNode rootNode, NodeType nodeType,
-                    String content, Integer depth) {
+                    String content, Integer depth, String branchTitle) {
         this.member = member;
         this.parent = parent;
         this.rootNode = rootNode;
         this.nodeType = nodeType;
         this.content = content;
         this.depth = depth;
+        this.branchTitle = branchTitle;
         this.createdAt = LocalDateTime.now();
+    }
+
+
+
+    //브랜치 닫기/열기
+    public void close() {
+        this.closed = true;
+    }
+
+    public void open() {
+        this.closed = false;
+    }
+
+    //브렌치 순서 설정
+    public void updateBranchOrder(Integer order){
+        this.branchOrder = order;
+    }
+
+    //브렌치 제목 설정
+    public void updateBranchTitle(String title) {
+        this.branchTitle = title;
     }
 }

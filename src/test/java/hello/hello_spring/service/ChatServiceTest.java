@@ -2,6 +2,7 @@ package hello.hello_spring.service;
 
 import hello.hello_spring.domain.Member;
 import hello.hello_spring.domain.chat.ChatNode;
+import hello.hello_spring.domain.chat.NodeType;
 import hello.hello_spring.repository.ChatNodeRepository;
 import hello.hello_spring.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +42,25 @@ public class ChatServiceTest {
         //then
         assertThat(savedFollowUpQuestion.getRootNode()).isEqualTo(rootNode);
         assertThat(followUpAnswer.getRootNode()).isEqualTo(rootNode);
+    }
+
+    @Test
+    void closeBranchTest(){
+        //given: 노드 생성
+        ChatNode node = chatNodeRepository.save(
+                ChatNode.builder()
+                        .content("test")
+                        .nodeType(NodeType.QUESTION)
+                        .depth(0)
+                        .build()
+        );
+
+        //when: 닫기
+        chatService.closeBranch(node.getId());
+
+        //then: 확인
+        ChatNode found = chatNodeRepository.findById(node.getId()).get();
+        assertThat(found.getClosed()).isTrue();
     }
 
 }
